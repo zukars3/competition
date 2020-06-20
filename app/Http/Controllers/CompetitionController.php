@@ -81,17 +81,17 @@ class CompetitionController extends Controller
                         continue;
                     }
 
-                    $rand = $faker->randomElements([$teams[$i], $teams[$j]], 2);
+                    $fight = $faker->randomElements([$teams[$i], $teams[$j]], 2);
 
                     Fight::create([
-                        'teams' => $rand[0]->name . ' VS ' . $rand[1]->name,
+                        'teams' => $fight[0]->name . ' VS ' . $fight[1]->name,
                         'type' => 'group',
-                        'winner_id' => $rand[0]->id,
-                        'loser_id' => $rand[1]->id
+                        'winner_id' => $fight[0]->id,
+                        'loser_id' => $fight[1]->id
                     ]);
 
-                    $rand[0]->increment('points');
-                    $rand[0]->increment('total_points');
+                    $fight[0]->increment('points');
+                    $fight[0]->increment('total_points');
                 }
             }
         }
@@ -102,46 +102,46 @@ class CompetitionController extends Controller
         $j = 3;
 
         for ($i = 0; $i < 4; $i++) {
-            $rand = $faker->randomElements([$divisionA[$i], $divisionB[$j]], 2);
+            $fight = $faker->randomElements([$divisionA[$i], $divisionB[$j]], 2);
 
             Fight::create([
-                'teams' => $rand[0]->name . ' VS ' . $rand[1]->name,
+                'teams' => $fight[0]->name . ' VS ' . $fight[1]->name,
                 'type' => 'playoff',
-                'winner_id' => $rand[0]->id,
-                'loser_id' => $rand[1]->id
+                'winner_id' => $fight[0]->id,
+                'loser_id' => $fight[1]->id
             ]);
 
-            $semiFinal[] = $rand[0];
+            $semiFinal[] = $fight[0];
 
-            $rand[0]->increment('total_points', 2);
+            $fight[0]->increment('total_points', 2);
             $j--;
         }
 
         for ($i = 0; $i <= 2; $i = $i + 2) {
-            $rand = $faker->randomElements([$semiFinal[$i], $semiFinal[$i + 1]], 2, false);
+            $fight = $faker->randomElements([$semiFinal[$i], $semiFinal[$i + 1]], 2, false);
 
             Fight::create([
-                'teams' => $rand[0]->name . ' VS ' . $rand[1]->name,
+                'teams' => $fight[0]->name . ' VS ' . $fight[1]->name,
                 'type' => 'semi-final',
-                'winner_id' => $rand[0]->id,
-                'loser_id' => $rand[1]->id
+                'winner_id' => $fight[0]->id,
+                'loser_id' => $fight[1]->id
             ]);
 
-            $final[] = $rand[0];
+            $final[] = $fight[0];
 
-            $rand[0]->increment('total_points', 2);
+            $fight[0]->increment('total_points', 2);
         }
 
-        $rand = $faker->randomElements([$final[0], $final[1]], 2, false);
+        $fight = $faker->randomElements([$final[0], $final[1]], 2, false);
 
         Fight::create([
-            'teams' => $rand[0]->name . ' VS ' . $rand[1]->name,
+            'teams' => $fight[0]->name . ' VS ' . $fight[1]->name,
             'type' => 'final',
-            'winner_id' => $rand[0]->id,
-            'loser_id' => $rand[1]->id
+            'winner_id' => $fight[0]->id,
+            'loser_id' => $fight[1]->id
         ]);
 
-        $rand[0]->increment('total_points', 3);
-        $rand[0]->update(['champion' => true]);
+        $fight[0]->increment('total_points', 3);
+        $fight[0]->update(['champion' => true]);
     }
 }
