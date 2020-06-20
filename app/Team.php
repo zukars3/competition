@@ -18,12 +18,12 @@ class Team extends Model
 
     public function winner()
     {
-        return $this->hasMany('App\Fight', 'winner_id', 'id');
+        return $this->hasMany(Fight::class, 'winner_id', 'id');
     }
 
     public function loser()
     {
-        return $this->hasMany('App\Fight', 'loser_id', 'id');
+        return $this->hasMany(Fight::class, 'loser_id', 'id');
     }
 
     public function scopeDivisionA($query)

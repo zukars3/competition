@@ -17,11 +17,11 @@ class Fight extends Model
 
     public function winner()
     {
-        return $this->hasOne('App\Team', 'id', 'winner_id');
+        return $this->hasOne(Team::class, 'id', 'winner_id');
     }
 
     public function loser()
     {
-        return $this->belongsTo('App\Team', 'id', 'loser_id');
+        return $this->belongsTo(Team::class, 'id', 'loser_id');
     }
 }
