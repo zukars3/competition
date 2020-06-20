@@ -7,22 +7,21 @@ use App\Finals;
 use App\SemiFinal;
 use App\Team;
 use Faker\Generator as Faker;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class CompetitionController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $divisionA = Team::divisionA()->get();
         $divisionB = Team::divisionB()->get();
 
-        $playoffDivisionA = Team::divisionA()
-            ->orderBy('points', 'DESC')
-            ->get();
-        $playoffDivisionB = Team::divisionB()
-            ->orderBy('points', 'DESC')
-            ->get();
-        $semiFinal = SemiFinal::all();
-        $final = Finals::all();
+        $playoff = Fight::where('type', 'playoff')->get();
+
+        $semiFinal = Fight::where('type', 'semi-final')->get();
+
+        $final = Fight::where('type', 'final')->get();
 
         $champion = Team::where('champion', 1)->get();
 
@@ -31,8 +30,7 @@ class CompetitionController extends Controller
         return view('home', [
             'divisionA' => $divisionA,
             'divisionB' => $divisionB,
-            'playoffDivisionA' => $playoffDivisionA,
-            'playoffDivisionB' => $playoffDivisionB,
+            'playoff' => $playoff,
             'semiFinal' => $semiFinal,
             'final' => $final,
             'champion' => $champion,
@@ -40,15 +38,13 @@ class CompetitionController extends Controller
         ]);
     }
 
-    public function create(Faker $faker)
+    public function create(Faker $faker): RedirectResponse
     {
         $teams = Team::all();
 
         if (count($teams) !== 0) {
             Team::truncate();
             Fight::truncate();
-            SemiFinal::truncate();
-            Finals::truncate();
         }
 
         for ($i = 0; $i < 8; $i++) {
@@ -88,6 +84,8 @@ class CompetitionController extends Controller
                     $rand = $faker->randomElements([$teams[$i], $teams[$j]], 2);
 
                     Fight::create([
+                        'teams' => $rand[0]->name . ' VS ' . $rand[1]->name,
+                        'type' => 'group',
                         'winner_id' => $rand[0]->id,
                         'loser_id' => $rand[1]->id
                     ]);
@@ -101,54 +99,49 @@ class CompetitionController extends Controller
         $divisionA = Team::where('division', 'A')->orderBy('points', 'DESC')->take(4)->get();
         $divisionB = Team::where('division', 'B')->orderBy('points', 'DESC')->take(4)->get();
 
-        foreach ($divisionA as $team) {
-            $team->update(['playoff' => true]);
-        }
-
-        foreach ($divisionB as $team) {
-            $team->update(['playoff' => true]);
-        }
-
         $j = 3;
 
         for ($i = 0; $i < 4; $i++) {
             $rand = $faker->randomElements([$divisionA[$i], $divisionB[$j]], 2);
 
-            SemiFinal::create([
-                'team_id' => $rand[0]->id,
-            ]);
-
             Fight::create([
+                'teams' => $rand[0]->name . ' VS ' . $rand[1]->name,
+                'type' => 'playoff',
                 'winner_id' => $rand[0]->id,
                 'loser_id' => $rand[1]->id
             ]);
 
+            $semiFinal[] = $rand[0];
+
             $rand[0]->increment('total_points', 2);
-            $rand[0]->update(['semi-final' => true]);
             $j--;
         }
-
-        $semiFinal = SemiFinal::all();
 
         for ($i = 0; $i <= 2; $i = $i + 2) {
             $rand = $faker->randomElements([$semiFinal[$i], $semiFinal[$i + 1]], 2, false);
 
-            Finals::create([
-                'team_id' => $rand[0]->team_id
-            ]);
-
             Fight::create([
-                'winner_id' => $rand[0]->team_id,
-                'loser_id' => $rand[1]->team_id
+                'teams' => $rand[0]->name . ' VS ' . $rand[1]->name,
+                'type' => 'semi-final',
+                'winner_id' => $rand[0]->id,
+                'loser_id' => $rand[1]->id
             ]);
 
-            $rand[0]->team->increment('total_points', 2);
-            $rand[0]->update(['final' => true]);
             $final[] = $rand[0];
+
+            $rand[0]->increment('total_points', 2);
         }
 
         $rand = $faker->randomElements([$final[0], $final[1]], 2, false);
-        $rand[0]->team->increment('total_points', 2);
-        $rand[0]->team->update(['champion' => true]);
+
+        Fight::create([
+            'teams' => $rand[0]->name . ' VS ' . $rand[1]->name,
+            'type' => 'final',
+            'winner_id' => $rand[0]->id,
+            'loser_id' => $rand[1]->id
+        ]);
+
+        $rand[0]->increment('total_points', 3);
+        $rand[0]->update(['champion' => true]);
     }
 }

@@ -10,6 +10,8 @@ class CreateFightsTable extends Migration
     {
         Schema::create('fights', function (Blueprint $table) {
             $table->id();
+            $table->string('teams');
+            $table->string('type');
             $table->unsignedBigInteger('winner_id');
             $table->unsignedBigInteger('loser_id');
         });

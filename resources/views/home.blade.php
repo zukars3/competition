@@ -76,17 +76,17 @@
 
         <div class="row playoff">
             <div class="col-md-2 playoff">
-                {{ $playoffDivisionA[0]->name }} VS {{ $playoffDivisionB[3]->name }}<br>
-                {{ $playoffDivisionA[1]->name }} VS {{ $playoffDivisionB[2]->name }}<br><br>
-                {{ $playoffDivisionA[2]->name }} VS {{ $playoffDivisionB[1]->name }}<br>
-                {{ $playoffDivisionA[3]->name }} VS {{ $playoffDivisionB[0]->name }}
+                {{ $playoff[0]->teams }}<br>
+                {{ $playoff[1]->teams }}<br><br>
+                {{ $playoff[2]->teams }}<br>
+                {{ $playoff[3]->teams }}<br>
             </div>
             <div class="col-md-2 semi-final">
-                {{ $semiFinal[0]->team->name }} VS {{ $semiFinal[1]->team->name }}<br>
-                {{ $semiFinal[2]->team->name }} VS {{ $semiFinal[3]->team->name }}
+                {{ $semiFinal[0]->teams }}<br>
+                {{ $semiFinal[1]->teams }}
             </div>
             <div class="col-md-2 final">
-                {{ $final[0]->team->name }} VS {{ $final[1]->team->name }}
+                {{ $final[0]->teams }}
             </div>
             <div class="col-md-3 champion">
                 {{ $champion[0]->name }} is the champion!

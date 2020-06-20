@@ -36,16 +36,6 @@ class Team extends Model
         return $query->where('division', 'B');
     }
 
-    public function scopeSemiFinal($query)
-    {
-        return $query->where('semi-final', 1);
-    }
-
-    public function scopeFinal($query)
-    {
-        return $query->where('final', 1);
-    }
-
     public function scopeResult($query, $team, $opponent)
     {
         $win = $query->whereHas('winner', function ($query) use ($opponent, $team) {
