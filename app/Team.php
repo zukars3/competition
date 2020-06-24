@@ -36,7 +36,7 @@ class Team extends Model
         return $query->where('division', 'B');
     }
 
-    public function scopeResult($query, $team, $opponent)
+    public function scopeResult($query, int $team, int $opponent)
     {
         $win = $query->whereHas('winner', function ($query) use ($opponent, $team) {
             $query->where('loser_id', $opponent)
