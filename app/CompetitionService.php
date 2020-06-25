@@ -3,7 +3,6 @@
 namespace App;
 
 use Faker\Generator as Faker;
-use Illuminate\Http\RedirectResponse;
 
 class CompetitionService
 {

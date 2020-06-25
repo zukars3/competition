@@ -14,14 +14,4 @@ class Fight extends Model
     ];
 
     public $timestamps = false;
-
-    public function winner()
-    {
-        return $this->hasOne(Team::class, 'id', 'winner_id');
-    }
-
-    public function loser()
-    {
-        return $this->belongsTo(Team::class, 'id', 'loser_id');
-    }
 }

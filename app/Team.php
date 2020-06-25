@@ -21,11 +21,6 @@ class Team extends Model
         return $this->hasMany(Fight::class, 'winner_id', 'id');
     }
 
-    public function loser()
-    {
-        return $this->hasMany(Fight::class, 'loser_id', 'id');
-    }
-
     public function scopeDivisionA($query)
     {
         return $query->where('division', 'A');
@@ -43,8 +38,6 @@ class Team extends Model
                 ->where('winner_id', $team);
         })->get();
 
-        $result = (count($win) == 0) ? 'loss' : 'win';
-
-        return $result;
+        return (count($win) == 0) ? 'loss' : 'win';
     }
 }
